@@ -1,5 +1,7 @@
 # [postcss][postcss]-merge-rules [![Build Status](https://travis-ci.org/ben-eb/postcss-merge-rules.svg?branch=master)][ci] [![NPM version](https://badge.fury.io/js/postcss-merge-rules.svg)][npm] [![Dependency Status](https://gemnasium.com/ben-eb/postcss-merge-rules.svg)][deps]
 
+**This plugin was moved to [cssnano repository](https://github.com/ben-eb/cssnano/blob/master/packages/postcss-merge-rules)**
+
 > Merge CSS rules with PostCSS.
 
 ## Install
