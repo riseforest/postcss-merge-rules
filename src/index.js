@@ -158,45 +158,50 @@ function partialMerge (first, second) {
     }
 }
 
-function selectorMerger (browsers, compatibilityCache) {
-    let cache = null;
+function selectorMerger(browsers, compatibilityCache) {
+    let cacheList = {};
     return function (rule) {
-        // Prime the cache with the first rule, or alternately ensure that it is
-        // safe to merge both declarations before continuing
-        if (!cache || !canMerge(rule, cache, browsers, compatibilityCache)) {
-            cache = rule;
-            return;
+        cacheList[rule.selector] = rule;
+        for (let name in cacheList) {
+            let cache = cacheList[name];
+            // console.log('cache', cache.selector)
+            // Ensure that we don't deduplicate the same rule; this is sometimes
+            // caused by a partial merge
+            if (cache === rule) {
+                cache = rule;
+                continue;
+            }
+            // Prime the cache with the first rule, or alternately ensure that it is
+            // safe to merge both declarations before continuing
+            if (!canMerge(rule, cache, browsers, compatibilityCache)) {
+                continue;
+            }
+            // Merge when declarations are exactly equal
+            // e.g. h1 { color: red } h2 { color: red }
+            if (getDecls(rule).join(';') === getDecls(cache).join(';')) {
+                delete cacheList[cache.selector];
+                delete cacheList[rule.selector];
+                rule.selector = joinSelectors(cache, rule);
+                cache.remove();
+                cacheList[rule.selector] = rule;
+            }
+            // Merge when both selectors are exactly equal
+            // e.g. a { color: blue } a { font-weight: bold }
+            // if (cache.selector === rule.selector) {
+            //     const cached = getDecls(cache);
+            //     rule.walk(decl => {
+            //         if (~cached.indexOf(String(decl))) {
+            //             return decl.remove();
+            //         }
+            //         decl.moveTo(cache);
+            //     });
+            //     rule.remove();
+            //     return;
+            // }
+            // // Partial merge: check if the rule contains a subset of the last; if
+            // // so create a joined selector with the subset, if smaller.
+            // cache = partialMerge(cache, rule);
         }
-        // Ensure that we don't deduplicate the same rule; this is sometimes
-        // caused by a partial merge
-        if (cache === rule) {
-            cache = rule;
-            return;
-        }
-        // Merge when declarations are exactly equal
-        // e.g. h1 { color: red } h2 { color: red }
-        if (getDecls(rule).join(';') === getDecls(cache).join(';')) {
-            rule.selector = joinSelectors(cache, rule);
-            cache.remove();
-            cache = rule;
-            return;
-        }
-        // Merge when both selectors are exactly equal
-        // e.g. a { color: blue } a { font-weight: bold }
-        if (cache.selector === rule.selector) {
-            const cached = getDecls(cache);
-            rule.walk(decl => {
-                if (~cached.indexOf(String(decl))) {
-                    return decl.remove();
-                }
-                decl.moveTo(cache);
-            });
-            rule.remove();
-            return;
-        }
-        // Partial merge: check if the rule contains a subset of the last; if
-        // so create a joined selector with the subset, if smaller.
-        cache = partialMerge(cache, rule);
     };
 }
 
