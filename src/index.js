@@ -1,4 +1,5 @@
-import browserslist from 'browserslist';
+/* eslint-disable*/
+import browserslist, { cache } from 'browserslist';
 import postcss from 'postcss';
 import vendors from 'vendors';
 import clone from './lib/clone';
@@ -6,7 +7,7 @@ import ensureCompatibility from './lib/ensureCompatibility';
 
 const prefixes = vendors.map(v => `-${v}-`);
 
-function intersect (a, b, not) {
+function intersect(a, b, not) {
     return a.filter(c => {
         const index = ~b.indexOf(c);
         return not ? !index : index;
@@ -16,26 +17,26 @@ function intersect (a, b, not) {
 const different = (a, b) => intersect(a, b, true).concat(intersect(b, a, true));
 const filterPrefixes = selector => intersect(prefixes, selector);
 
-function sameVendor (selectorsA, selectorsB) {
+function sameVendor(selectorsA, selectorsB) {
     let same = selectors => selectors.map(filterPrefixes).join();
     return same(selectorsA) === same(selectorsB);
 }
 
 const noVendor = selector => !filterPrefixes(selector).length;
 
-function sameParent (ruleA, ruleB) {
+function sameParent(ruleA, ruleB) {
     const hasParent = ruleA.parent && ruleB.parent;
     let sameType = hasParent && ruleA.parent.type === ruleB.parent.type;
     // If an at rule, ensure that the parameters are the same
     if (hasParent && ruleA.parent.type !== 'root' && ruleB.parent.type !== 'root') {
         sameType = sameType &&
-                   ruleA.parent.params === ruleB.parent.params &&
-                   ruleA.parent.name === ruleB.parent.name;
+            ruleA.parent.params === ruleB.parent.params &&
+            ruleA.parent.name === ruleB.parent.name;
     }
     return hasParent ? sameType : true;
 }
 
-function canMerge (ruleA, ruleB, browsers, compatibilityCache) {
+function canMerge(ruleA, ruleB, browsers, compatibilityCache) {
     const a = ruleA.selectors;
     const b = ruleB.selectors;
 
@@ -46,7 +47,7 @@ function canMerge (ruleA, ruleB, browsers, compatibilityCache) {
     }
 
     const parent = sameParent(ruleA, ruleB);
-    const {name} = ruleA.parent;
+    const { name } = ruleA.parent;
     if (parent && name && ~name.indexOf('keyframes')) {
         return false;
     }
@@ -56,11 +57,11 @@ function canMerge (ruleA, ruleB, browsers, compatibilityCache) {
 const getDecls = rule => rule.nodes ? rule.nodes.map(String) : [];
 const joinSelectors = (...rules) => rules.map(s => s.selector).join();
 
-function ruleLength (...rules) {
+function ruleLength(...rules) {
     return rules.map(r => r.nodes.length ? String(r) : '').join('').length;
 }
 
-function splitProp (prop) {
+function splitProp(prop) {
     const parts = prop.split('-');
     let base, rest;
     // Treat vendor prefixed properties as if they were unprefixed;
@@ -77,7 +78,7 @@ function splitProp (prop) {
     return [base, rest];
 }
 
-function isConflictingProp (propA, propB) {
+function isConflictingProp(propA, propB) {
     if (propA === propB) {
         return true;
     }
@@ -86,11 +87,11 @@ function isConflictingProp (propA, propB) {
     return a[0] === b[0] && a[1].length !== b[1].length;
 }
 
-function hasConflicts (declProp, notMoved) {
+function hasConflicts(declProp, notMoved) {
     return notMoved.some(prop => isConflictingProp(prop, declProp));
 }
 
-function partialMerge (first, second) {
+function partialMerge(first, second) {
     let intersection = intersect(getDecls(first), getDecls(second));
     if (!intersection.length) {
         return second;
@@ -161,6 +162,20 @@ function partialMerge (first, second) {
 function selectorMerger(browsers, compatibilityCache) {
     let cacheList = {};
     return function (rule) {
+        if (cacheList[rule.selector]) {
+            if (cacheList[rule.selector] === rule) return;
+            // Merge when both selectors are exactly equal
+            // e.g. a { color: blue } a { font-weight: bold }
+            const cached = getDecls(cacheList[rule.selector]);
+            rule.walk(decl => {
+                if (~cached.indexOf(String(decl))) {
+                    return decl.remove();
+                }
+                decl.moveTo(cacheList[rule.selector]);
+            });
+            rule.remove();
+            return;
+        }
         cacheList[rule.selector] = rule;
         for (let name in cacheList) {
             let cache = cacheList[name];
@@ -168,7 +183,6 @@ function selectorMerger(browsers, compatibilityCache) {
             // Ensure that we don't deduplicate the same rule; this is sometimes
             // caused by a partial merge
             if (cache === rule) {
-                cache = rule;
                 continue;
             }
             // Prime the cache with the first rule, or alternately ensure that it is
@@ -184,30 +198,18 @@ function selectorMerger(browsers, compatibilityCache) {
                 rule.selector = joinSelectors(cache, rule);
                 cache.remove();
                 cacheList[rule.selector] = rule;
+                continue
             }
-            // Merge when both selectors are exactly equal
-            // e.g. a { color: blue } a { font-weight: bold }
-            // if (cache.selector === rule.selector) {
-            //     const cached = getDecls(cache);
-            //     rule.walk(decl => {
-            //         if (~cached.indexOf(String(decl))) {
-            //             return decl.remove();
-            //         }
-            //         decl.moveTo(cache);
-            //     });
-            //     rule.remove();
-            //     return;
-            // }
-            // // Partial merge: check if the rule contains a subset of the last; if
-            // // so create a joined selector with the subset, if smaller.
-            // cache = partialMerge(cache, rule);
+            // Partial merge: check if the rule contains a subset of the last; if
+            // so create a joined selector with the subset, if smaller.
+            cache = partialMerge(cache, rule);
         }
     };
 }
 
 export default postcss.plugin('postcss-merge-rules', () => {
     return (css, result) => {
-        const {opts} = result;
+        const { opts } = result;
         const browsers = browserslist(null, {
             stats: opts && opts.stats,
             path: opts && opts.from,
