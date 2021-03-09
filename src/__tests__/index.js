@@ -16,61 +16,61 @@ function testOutput (t, input, expected, options) {
     });
 }
 
-// test(
-//     'should merge based on declarations',
-//     testOutput,
-//     'h1{display:block}h2{display:block}',
-//     'h1,h2{display:block}'
-// );
+test(
+    'should merge based on declarations',
+    testOutput,
+    'h1{display:block}h2{display:block}',
+    'h1,h2{display:block}'
+);
 
-// test(
-//     'should merge based on declarations (2)',
-//     testOutput,
-//     'h1{color:red;line-height:1.5;font-size:2em}h2{color:red;line-height:1.5;font-size:2em}',
-//     'h1,h2{color:red;line-height:1.5;font-size:2em}'
-// );
+test(
+    'should merge based on declarations (2)',
+    testOutput,
+    'h1{color:red;line-height:1.5;font-size:2em}h2{color:red;line-height:1.5;font-size:2em}',
+    'h1,h2{color:red;line-height:1.5;font-size:2em}'
+);
 
-// test(
-//     'should merge based on declarations, with a different property order',
-//     testOutput,
-//     'h1{color:red;line-height:1.5;font-size:2em}h2{font-size:2em;color:red;line-height:1.5}',
-//     'h1,h2{color:red;line-height:1.5;font-size:2em}'
-// );
+test(
+    'should merge based on declarations, with a different property order',
+    testOutput,
+    'h1{color:red;line-height:1.5;font-size:2em}h2{font-size:2em;color:red;line-height:1.5}',
+    'h1,h2{color:red;line-height:1.5;font-size:2em}'
+);
 
-// test(
-//     'should merge based on selectors',
-//     testOutput,
-//     'h1{display:block}h1{text-decoration:underline}',
-//     'h1{display:block;text-decoration:underline}'
-// );
+test(
+    'should merge based on selectors',
+    testOutput,
+    'h1{display:block}h1{text-decoration:underline}',
+    'h1{display:block;text-decoration:underline}'
+);
 
-// test(
-//     'should merge based on selectors (2)',
-//     testOutput,
-//     'h1{color:red;display:block}h1{text-decoration:underline}',
-//     'h1{color:red;display:block;text-decoration:underline}'
-// );
+test(
+    'should merge based on selectors (2)',
+    testOutput,
+    'h1{color:red;display:block}h1{text-decoration:underline}',
+    'h1{color:red;display:block;text-decoration:underline}'
+);
 
-// test(
-//     'should merge based on selectors (3)',
-//     testOutput,
-//     'h1{font-size:2em;color:#000}h1{background:#fff;line-height:1.5}',
-//     'h1{font-size:2em;color:#000;background:#fff;line-height:1.5}'
-// );
+test(
+    'should merge based on selectors (3)',
+    testOutput,
+    'h1{font-size:2em;color:#000}h1{background:#fff;line-height:1.5}',
+    'h1{font-size:2em;color:#000;background:#fff;line-height:1.5}'
+);
 
-// test(
-//     'should merge in media queries',
-//     testOutput,
-//     '@media print{h1{display:block}h1{color:red}}',
-//     '@media print{h1{display:block;color:red}}'
-// );
+test(
+    'should merge in media queries',
+    testOutput,
+    '@media print{h1{display:block}h1{color:red}}',
+    '@media print{h1{display:block;color:red}}'
+);
 
-// test(
-//     'should merge in media queries (2)',
-//     testOutput,
-//     '@media print{h1{display:block}p{display:block}}',
-//     '@media print{h1,p{display:block}}'
-// );
+test(
+    'should merge in media queries (2)',
+    testOutput,
+    '@media print{h1{display:block}p{display:block}}',
+    '@media print{h1,p{display:block}}'
+);
 
 test(
     'should merge in media queries (3)',

@@ -37,6 +37,7 @@ function sameParent(ruleA, ruleB) {
 }
 
 function canMerge(ruleA, ruleB, browsers, compatibilityCache) {
+    console.log('canmerge')
     const a = ruleA.selectors;
     const b = ruleB.selectors;
 
@@ -47,6 +48,8 @@ function canMerge(ruleA, ruleB, browsers, compatibilityCache) {
     }
 
     const parent = sameParent(ruleA, ruleB);
+    console.log('parent', ruleA, ruleB, parent)
+    if (!ruleA.parent) return false;
     const { name } = ruleA.parent;
     if (parent && name && ~name.indexOf('keyframes')) {
         return false;
@@ -91,7 +94,7 @@ function hasConflicts(declProp, notMoved) {
     return notMoved.some(prop => isConflictingProp(prop, declProp));
 }
 
-function partialMerge(first, second) {
+function partialMerge(first, second, cacheList) {
     let intersection = intersect(getDecls(first), getDecls(second));
     if (!intersection.length) {
         return second;
@@ -144,9 +147,12 @@ function partialMerge(first, second) {
     if (merged < original) {
         first.replaceWith(firstClone);
         second.replaceWith(secondClone);
+        cacheList[firstClone.selector] = firstClone;
+        cacheList[secondClone.selector] = secondClone;
         [firstClone, recievingBlock, secondClone].forEach(r => {
             if (!r.nodes.length) {
                 r.remove();
+                delete cacheList[r.selector];
             }
         });
         if (!secondClone.parent) {
@@ -164,6 +170,9 @@ function selectorMerger(browsers, compatibilityCache) {
     return function (rule) {
         if (cacheList[rule.selector]) {
             if (cacheList[rule.selector] === rule) return;
+            if (!canMerge(rule, cacheList[rule.selector], browsers, compatibilityCache)) {
+                return;
+            }
             // Merge when both selectors are exactly equal
             // e.g. a { color: blue } a { font-weight: bold }
             const cached = getDecls(cacheList[rule.selector]);
@@ -202,7 +211,7 @@ function selectorMerger(browsers, compatibilityCache) {
             }
             // Partial merge: check if the rule contains a subset of the last; if
             // so create a joined selector with the subset, if smaller.
-            cache = partialMerge(cache, rule);
+            partialMerge(cache, rule, cacheList);
         }
     };
 }
