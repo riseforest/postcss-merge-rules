@@ -196,20 +196,21 @@ test(
     'should perform partial merging of selectors (8)',
     testOutput,
     '.foo{margin:0;display:block}.barim{display:block;line-height:1}.bazaz{font-size:3em;margin:0}',
-    '.foo{margin:0}.foo,.barim{display:block}.barim{line-height:1}.bazaz{font-size:3em;margin:0}'
+    '.foo,.barim{display:block}.barim{line-height:1}.foo,.bazaz{margin:0}.bazaz{font-size:3em}'
 );
 
 test(
     'should not merge over-eagerly (cssnano#36 [case 3])',
     testOutput,
-    '.foobam{font-family:serif;display:block}.barim{display:block;line-height:1}.bazaz{font-size:3em;font-family:serif}'
+    '.foobam{font-family:serif;display:block}.barim{display:block;line-height:1}.bazaz{font-size:3em;font-family:serif}',
+    ".foobam{display:block}.barim{display:block;line-height:1}.foobam,.bazaz{font-family:serif}.bazaz{font-size:3em}"
 );
 
 test(
     'should not merge over-eagerly (cssnano#36 [case 4])',
     testOutput,
     '.foo{font-family:serif;display:block}.barim{display:block;line-height:1}.bazaz{font-size:3em;font-family:serif}',
-    '.foo{font-family:serif}.foo,.barim{display:block}.barim{line-height:1}.bazaz{font-size:3em;font-family:serif}'
+    '.foo,.barim{display:block}.barim{line-height:1}.foo,.bazaz{font-family:serif}.bazaz{font-size:3em}'
 );
 
 test(
@@ -387,7 +388,7 @@ test(
     'should not merge across font face rules',
     testOutput,
     '.one, .two, .three { font-family: "lorem"; font-weight: normal; } .four { font-family: "lorem", serif; font-weight: normal; }.five { font-family: "lorem"; font-weight: normal; } @font-face { font-family: "lorem"; font-weight: normal; src: url(/assets/lorem.eot); src: url(/assets/lorem.eot?#iefix) format("embedded-opentype"), url(/assets/lorem.woff) format("woff"), url(/assets/lorem.ttf) format("truetype"); }',
-    '.one, .two, .three { font-family: "lorem"; font-weight: normal; } .four { font-family: "lorem", serif; }.four,.five { font-weight: normal; }.five { font-family: "lorem"; } @font-face { font-family: "lorem"; font-weight: normal; src: url(/assets/lorem.eot); src: url(/assets/lorem.eot?#iefix) format("embedded-opentype"), url(/assets/lorem.woff) format("woff"), url(/assets/lorem.ttf) format("truetype"); }'
+    ".four { font-family: \"lorem\", serif; font-weight: normal; }.one, .two, .three,.five { font-family: \"lorem\"; font-weight: normal; } @font-face { font-family: \"lorem\"; font-weight: normal; src: url(/assets/lorem.eot); src: url(/assets/lorem.eot?#iefix) format(\"embedded-opentype\"), url(/assets/lorem.woff) format(\"woff\"), url(/assets/lorem.ttf) format(\"truetype\"); }"
 );
 
 test(

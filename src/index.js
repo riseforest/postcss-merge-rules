@@ -37,7 +37,6 @@ function sameParent(ruleA, ruleB) {
 }
 
 function canMerge(ruleA, ruleB, browsers, compatibilityCache) {
-    console.log('canmerge')
     const a = ruleA.selectors;
     const b = ruleB.selectors;
 
@@ -48,7 +47,6 @@ function canMerge(ruleA, ruleB, browsers, compatibilityCache) {
     }
 
     const parent = sameParent(ruleA, ruleB);
-    console.log('parent', ruleA, ruleB, parent)
     if (!ruleA.parent) return false;
     const { name } = ruleA.parent;
     if (parent && name && ~name.indexOf('keyframes')) {
@@ -149,6 +147,7 @@ function partialMerge(first, second, cacheList) {
         second.replaceWith(secondClone);
         cacheList[firstClone.selector] = firstClone;
         cacheList[secondClone.selector] = secondClone;
+        cacheList[recievingBlock.selector] = recievingBlock;
         [firstClone, recievingBlock, secondClone].forEach(r => {
             if (!r.nodes.length) {
                 r.remove();
