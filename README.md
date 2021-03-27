@@ -1,16 +1,17 @@
-# [postcss][postcss]-merge-rules [![Build Status](https://travis-ci.org/ben-eb/postcss-merge-rules.svg?branch=master)][ci] [![NPM version](https://badge.fury.io/js/postcss-merge-rules.svg)][npm] [![Dependency Status](https://gemnasium.com/ben-eb/postcss-merge-rules.svg)][deps]
+# [postcss][postcss]-merge-rules2 ihherited from postcss-merge-rules which already deprecated
 
-**This plugin was moved to [cssnano repository](https://github.com/ben-eb/cssnano/blob/master/packages/postcss-merge-rules)**
+> Merge CSS rules with PostCSS. Only different is postcss-merge-rules2 will merge the css even if 2 css is not nearby. This action may bring some risk which mentioned in postcss-merge-rule issue discussion, but most of time is safed to use it and we still have requirement to use this feature becuase we know what we are doing.
 
-> Merge CSS rules with PostCSS.
 
 ## Install
 
-With [npm](https://npmjs.org/package/postcss-merge-rules) do:
+With [npm](https://npmjs.org/package/postcss-merge-rules2) do:
 
 ```
-npm install postcss-merge-rules --save
+npm install postcss-merge-rules2 --save
 ```
+
+## Below is postcss-merge-rule readme and still useful
 
 ## Examples
 
