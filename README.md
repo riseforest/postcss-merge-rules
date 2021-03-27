@@ -1,6 +1,6 @@
-# [postcss][postcss]-merge-rules2 ihherited from postcss-merge-rules which already deprecated
+# [postcss][postcss]-merge-rules2
 
-> Merge CSS rules with PostCSS. Only different is postcss-merge-rules2 will merge the css even if 2 css is not nearby. This action may bring some risk which mentioned in postcss-merge-rule issue discussion, but most of time is safed to use it and we still have requirement to use this feature becuase we know what we are doing.
+> Merge CSS rules with PostCSS ihherited from postcss-merge-rules which already deprecated. Only different is postcss-merge-rules2 will merge the css even if 2 css is not nearby. This action may bring some risk which mentioned in postcss-merge-rule issue discussion, but most of time is safed to use it and we still have requirement to use this feature becuase we know what we are doing.
 
 
 ## Install
@@ -9,6 +9,36 @@ With [npm](https://npmjs.org/package/postcss-merge-rules2) do:
 
 ```
 npm install postcss-merge-rules2 --save
+```
+
+## Differenet betten postcss-merge-rule and postcss-merge-rule2
+#### Input
+```css
+a {
+    color: blue;
+    font-weight: bold
+}
+b {
+    color: red
+}
+p {
+    color: blue;
+    font-weight: bold
+}
+```
+
+#### Output
+    postcss-merge-rules: output same as input
+
+```css
+postcss-merge-rules2: 
+a,p {
+    color: blue;
+    font-weight: bold
+}
+b {
+    color: red
+}
 ```
 
 ## Below is postcss-merge-rule readme and still useful
