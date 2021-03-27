@@ -1,6 +1,6 @@
 {
   "name": "postcss-merge-rules2",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Merge CSS rules with PostCSS.",
   "main": "dist/index.js",
   "files": [
@@ -44,7 +44,7 @@
   "homepage": "https://github.com/riseforest/postcss-merge-rules2",
   "author": {
     "name": "riseforest",
-    "email": "riseforest@outlook.com",
+    "email": "riseforest@outlook.com"
   },
   "repository": "riseforest/postcss-merge-rules2",
   "dependencies": {

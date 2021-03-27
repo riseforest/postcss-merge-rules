@@ -215,7 +215,7 @@ function selectorMerger(browsers, compatibilityCache) {
     };
 }
 
-export default postcss.plugin('postcss-merge-rules', () => {
+export default postcss.plugin('postcss-merge-rules2', () => {
     return (css, result) => {
         const { opts } = result;
         const browsers = browserslist(null, {
