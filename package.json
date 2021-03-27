@@ -41,13 +41,12 @@
     "postcss-discard-comments": "^2.0.4",
     "postcss-simple-vars": "^3.0.0"
   },
-  "homepage": "https://github.com/ben-eb/postcss-merge-rules",
+  "homepage": "https://github.com/riseforest/postcss-merge-rules2",
   "author": {
-    "name": "Ben Briggs",
-    "email": "beneb.info@gmail.com",
-    "url": "http://beneb.info"
+    "name": "riseforest",
+    "email": "riseforest@outlook.com",
   },
-  "repository": "ben-eb/postcss-merge-rules",
+  "repository": "riseforest/postcss-merge-rules2",
   "dependencies": {
     "browserslist": "^1.5.2",
     "caniuse-api": "^1.5.2",
