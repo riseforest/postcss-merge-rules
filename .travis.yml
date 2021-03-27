@@ -11,3 +11,4 @@ depoly:
   provider: npm
   email: riseforest@outlook.com
   api_key: "$NPM_TOKEN"
+  skip_cleanup: true
