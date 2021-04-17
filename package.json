@@ -50,8 +50,8 @@
   "dependencies": {
     "browserslist": "^1.5.2",
     "caniuse-api": "^1.5.2",
-    "postcss": "^5.0.4",
-    "postcss-selector-parser": "^2.2.2",
+    "postcss": "^8.2.10",
+    "postcss-selector-parser": "^6.0.4",
     "vendors": "^1.0.0"
   },
   "eslintConfig": {
